@@ -1,79 +1,79 @@
 #include "shell.h"
 
 /**
- * _Phistory - displays the history list, one command by line, preceded
+ * _myhistory - displays the history list, one command by line, preceded
  *              with line numbers, starting at 0.
- * @info: potential arguments contained in a sturcture. it maintains
+ * @info: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
  *  Return: Always 0
  */
-int _Phistory(info_r *info)
+int _myhistory(info_t *info)
 {
 	print_list(info->history);
 	return (0);
 }
 
 /**
- * unset_Palias - sets Palias to string
+ * unset_alias - sets alias to string
  * @info: parameter struct
  * @str: the string alias
  *
  * Return: Always 0 on success, 1 on error
  */
-int unset_Palias(info_r *info, char *str)
+int unset_alias(info_t *info, char *str)
 {
-	char *f, g;
-	int res;
+	char *p, c;
+	int ret;
 
-	f = _strchr(str, '=');
-	if (!f)
+	p = _strchr(str, '=');
+	if (!p)
 		return (1);
-	g = *f;
-	*f = 0;
-	res = delete_node_at_index(&(info->Palias),
-		get_node_index(info->alias, node_starts_with(info->Palias, str, -1)));
-	*f = g;
-	return (res);
+	c = *p;
+	*p = 0;
+	ret = delete_node_at_index(&(info->alias),
+		get_node_index(info->alias, node_starts_with(info->alias, str, -1)));
+	*p = c;
+	return (ret);
 }
 
 /**
- * set_Palias - sets Palias to string
+ * set_alias - sets alias to string
  * @info: parameter struct
- * @str: the string Palias
+ * @str: the string alias
  *
  * Return: Always 0 on success, 1 on error
  */
-int set_Palias(info_r *info, char *str)
+int set_alias(info_t *info, char *str)
 {
-	char *f;
+	char *p;
 
-	f = _strchr(str, '=');
-	if (!f)
+	p = _strchr(str, '=');
+	if (!p)
 		return (1);
-	if (!*++f)
-		return (unset_Palias(info, str));
+	if (!*++p)
+		return (unset_alias(info, str));
 
-	unset_Palias(info, str);
-	return (add_node_end(&(info->Palias), str, 0) == NULL);
+	unset_alias(info, str);
+	return (add_node_end(&(info->alias), str, 0) == NULL);
 }
 
 /**
- * print_Palias - prints an Palias string
- * @node: the Palias node
+ * print_alias - prints an alias string
+ * @node: the alias node
  *
  * Return: Always 0 on success, 1 on error
  */
-int print_Palias(list_q *node)
+int print_alias(list_t *node)
 {
-	char *f = NULL, *m = NULL;
+	char *p = NULL, *a = NULL;
 
 	if (node)
 	{
-		f = _strchr(node->str, '=');
-		for (i = node->str; i <= f; m++)
-			_putchar(*i);
+		p = _strchr(node->str, '=');
+		for (a = node->str; a <= p; a++)
+			_putchar(*a);
 		_putchar('\'');
-		_puts(f + 1);
+		_puts(p + 1);
 		_puts("'\n");
 		return (0);
 	}
@@ -81,34 +81,34 @@ int print_Palias(list_q *node)
 }
 
 /**
- * _Palias - mimics the Palias builtin (man Palias)
+ * _myalias - mimics the alias builtin (man alias)
  * @info: Structure containing potential arguments. Used to maintain
  *          constant function prototype.
  *  Return: Always 0
  */
-int _Palias(info_r *info)
+int _myalias(info_t *info)
 {
-	int m = 0;
-	char *f = NULL;
-	list_q *node = NULL;
+	int i = 0;
+	char *p = NULL;
+	list_t *node = NULL;
 
 	if (info->argc == 1)
 	{
-		node = info->Palias;
+		node = info->alias;
 		while (node)
 		{
-			print_Palias(node);
+			print_alias(node);
 			node = node->next;
 		}
 		return (0);
 	}
-	for (m = 1; info->argv[m]; m++)
+	for (i = 1; info->argv[i]; i++)
 	{
-		f = _strchr(info->argv[m], '=');
-		if (f)
-			set_palias(info, info->argv[m]);
+		p = _strchr(info->argv[i], '=');
+		if (p)
+			set_alias(info, info->argv[i]);
 		else
-			print_Palias(node_starts_with(info->Palias, info->argv[m], '='));
+			print_alias(node_starts_with(info->alias, info->argv[i], '='));
 	}
 
 	return (0);

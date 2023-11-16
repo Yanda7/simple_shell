@@ -1,44 +1,43 @@
-90% of storage used … If you run out, you won't have enough storage to create, edit and upload files. Get 100 GB of storage for R 34,99 R 8,99/month for 3 months.
 #include "shell.h"
 
 /**
  * _strlen - returns the length of a string
- * @p: the string whose length to check
+ * @s: the string whose length to check
  *
  * Return: integer length of string
  */
-int _strlen(char *p)
+int _strlen(char *s)
 {
-	int n = 0;
+	int i = 0;
 
-	if (!n)
+	if (!s)
 		return (0);
 
-	while (*p++)
-		n++;
-	return (n);
+	while (*s++)
+		i++;
+	return (i);
 }
 
 /**
  * _strcmp - performs lexicogarphic comparison of two strangs.
- * @p1: the first strang
- * @p2: the second strang
+ * @s1: the first strang
+ * @s2: the second strang
  *
- * Return: negative if p1 < p2, positive if p1 > p2, zero if p1 == p2
+ * Return: negative if s1 < s2, positive if s1 > s2, zero if s1 == s2
  */
-int _strcmp(char *p1, char *p2)
+int _strcmp(char *s1, char *s2)
 {
-	while (*p1 && *p2)
+	while (*s1 && *s2)
 	{
-		if (*p1 != *p2)
-			return (*p1 - *p2);
-		p1++;
-		p2++;
+		if (*s1 != *s2)
+			return (*s1 - *s2);
+		s1++;
+		s2++;
 	}
-	if (*p1 == *p2)
+	if (*s1 == *s2)
 		return (0);
 	else
-		return (*p1 < *p2 ? -1 : 1);
+		return (*s1 < *s2 ? -1 : 1);
 }
 
 /**

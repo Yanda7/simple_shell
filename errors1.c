@@ -2,23 +2,23 @@
 
 /**
  * _erratoi - converts a string to an integer
- * @j: the string to be converted
+ * @s: the string to be converted
  * Return: 0 if no numbers in string, converted number otherwise
  *       -1 on error
  */
-int _erratoi(char *j)
+int _erratoi(char *s)
 {
-	int m = 0;
+	int i = 0;
 	unsigned long int result = 0;
 
-	if (*h == '+')
-		h++;  /* TODO: why does this make main return 255? */
-	for (m = 0;  h[m] != '\0'; m++)
+	if (*s == '+')
+		s++;  /* TODO: why does this make main return 255? */
+	for (i = 0;  s[i] != '\0'; i++)
 	{
-		if (h[m] >= '0' && h[m] <= '9')
+		if (s[i] >= '0' && s[i] <= '9')
 		{
 			result *= 10;
-			result += (h[m] - '0');
+			result += (s[i] - '0');
 			if (result > INT_MAX)
 				return (-1);
 		}
@@ -35,15 +35,15 @@ int _erratoi(char *j)
  * Return: 0 if no numbers in string, converted number otherwise
  *        -1 on error
  */
-void print_error(info_r *info, char *estr)
+void print_error(info_t *info, char *estr)
 {
-	_Cputs(info->fname);
-	_Cputs(": ");
+	_eputs(info->fname);
+	_eputs(": ");
 	print_d(info->line_count, STDERR_FILENO);
-	_Cputs(": ");
-	_Cputs(info->argv[0]);
-	_Cputs(": ");
-	_Cputs(estr);
+	_eputs(": ");
+	_eputs(info->argv[0]);
+	_eputs(": ");
+	_eputs(estr);
 }
 
 /**
@@ -56,11 +56,11 @@ void print_error(info_r *info, char *estr)
 int print_d(int input, int fd)
 {
 	int (*__putchar)(char) = _putchar;
-	int m, count = 0;
+	int i, count = 0;
 	unsigned int _abs_, current;
 
 	if (fd == STDERR_FILENO)
-		__putchar = _Cputchar;
+		__putchar = _eputchar;
 	if (input < 0)
 	{
 		_abs_ = -input;
@@ -70,14 +70,14 @@ int print_d(int input, int fd)
 	else
 		_abs_ = input;
 	current = _abs_;
-	for (m = 1000000000; m > 1; m /= 10)
+	for (i = 1000000000; i > 1; i /= 10)
 	{
-		if (_abs_ / m)
+		if (_abs_ / i)
 		{
-			__putchar('0' + current / m);
+			__putchar('0' + current / i);
 			count++;
 		}
-		current %= m;
+		current %= i;
 	}
 	__putchar('0' + current);
 	count++;
@@ -127,14 +127,14 @@ char *convert_number(long int num, int base, int flags)
  *
  * Return: Always 0;
  */
-void remove_comments(char *buffer)
+void remove_comments(char *buf)
 {
-	int j;
+	int i;
 
-	for (j = 0; buffer[j] != '\0'; j++)
-		if (buffer[j] == '#' && (!j || buffer[j - 1] == ' '))
+	for (i = 0; buf[i] != '\0'; i++)
+		if (buf[i] == '#' && (!i || buf[i - 1] == ' '))
 		{
-			buffer[j] = '\0';
+			buf[i] = '\0';
 			break;
 		}
 }

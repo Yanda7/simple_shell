@@ -3,22 +3,22 @@
 /**
  * _strcpy - copies a string
  * @dest: the destination
- * @sr: the source
+ * @src: the source
  *
  * Return: pointer to destination
  */
-char *_strcpy(char *dest, char *sr)
+char *_strcpy(char *dest, char *src)
 {
-	int m = 0;
+	int i = 0;
 
-	if (dest == sr || sr == 0)
+	if (dest == src || src == 0)
 		return (dest);
-	while (sr[m])
+	while (src[i])
 	{
-		dest[m] = src[m];
-		m++;
+		dest[i] = src[i];
+		i++;
 	}
-	dest[m] = 0;
+	dest[i] = 0;
 	return (dest);
 }
 
@@ -53,14 +53,14 @@ char *_strdup(const char *str)
  */
 void _puts(char *str)
 {
-	int m = 0;
+	int i = 0;
 
 	if (!str)
 		return;
-	while (str[m] != '\0')
+	while (str[i] != '\0')
 	{
-		_putchar(str[m]);
-		m++;
+		_putchar(str[i]);
+		i++;
 	}
 }
 
@@ -71,17 +71,17 @@ void _puts(char *str)
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
-int _putchar(char f)
+int _putchar(char c)
 {
-	static int m;
+	static int i;
 	static char buf[WRITE_BUF_SIZE];
 
-	if (f == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		write(1, buf, m);
-		m = 0;
+		write(1, buf, i);
+		i = 0;
 	}
-	if (f != BUF_FLUSH)
-		buf[m++] = f;
+	if (c != BUF_FLUSH)
+		buf[i++] = c;
 	return (1);
 }

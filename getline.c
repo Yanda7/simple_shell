@@ -8,10 +8,10 @@
  *
  * Return: bytes read
  */
-size_j input_buf(info_r *info, char **buf, size_j *len)
+ssize_t input_buf(info_t *info, char **buf, size_t *len)
 {
-	size_j q = 0;
-	size_j len_g = 0;
+	ssize_t r = 0;
+	size_t len_p = 0;
 
 	if (!*len) /* if nothing left in the buffer, fill it */
 	{
@@ -20,28 +20,28 @@ size_j input_buf(info_r *info, char **buf, size_j *len)
 		*buf = NULL;
 		signal(SIGINT, sigintHandler);
 #if USE_GETLINE
-		q = getline(buf, &len_p, stdin);
+		r = getline(buf, &len_p, stdin);
 #else
-		q = _getline(info, buf, &len_p);
+		r = _getline(info, buf, &len_p);
 #endif
-		if (q > 0)
+		if (r > 0)
 		{
-			if ((*buf)[q - 1] == '\n')
+			if ((*buf)[r - 1] == '\n')
 			{
-				(*buf)[q - 1] = '\0'; 
-				q--;
+				(*buf)[r - 1] = '\0'; /* remove trailing newline */
+				r--;
 			}
 			info->linecount_flag = 1;
 			remove_comments(*buf);
 			build_history_list(info, *buf, info->histcount++);
 			/* if (_strchr(*buf, ';')) is this a command chain? */
 			{
-				*len = q;
+				*len = r;
 				info->cmd_buf = buf;
 			}
 		}
 	}
-	return (q);
+	return (r);
 }
 
 /**
@@ -50,63 +50,63 @@ size_j input_buf(info_r *info, char **buf, size_j *len)
  *
  * Return: bytes read
  */
-size_j get_input(info_r *info)
+ssize_t get_input(info_t *info)
 {
 	static char *buf; /* the ';' command chain buffer */
-	static size_j k, v, len;
-	size_j w = 0;
-	char **buf_q = &(info->arg), *q;
+	static size_t i, j, len;
+	ssize_t r = 0;
+	char **buf_p = &(info->arg), *p;
 
 	_putchar(BUF_FLUSH);
-	w = input_buf(info, &buf, &len);
-	if (w == -1) /* EOF */
+	r = input_buf(info, &buf, &len);
+	if (r == -1) /* EOF */
 		return (-1);
-	if (len)	
+	if (len)	/* we have commands left in the chain buffer */
 	{
-		v = k; 
-		q = buf + k; 
+		j = i; /* init new iterator to current buf position */
+		p = buf + i; /* get pointer for return */
 
-		check_chain(info, buf, &v, k, len);
-		while (v < len) /* iterate to semicolon or end */
+		check_chain(info, buf, &j, i, len);
+		while (j < len) /* iterate to semicolon or end */
 		{
-			if (is_chain(info, buf, &v))
+			if (is_chain(info, buf, &j))
 				break;
-			v++;
+			j++;
 		}
 
-		k = v + 1; 
-		if (k >= len) 
+		i = j + 1; /* increment past nulled ';'' */
+		if (i >= len) /* reached end of buffer? */
 		{
-			k = len = 0; 
+			i = len = 0; /* reset position and length */
 			info->cmd_buf_type = CMD_NORM;
 		}
 
-		*buf_q = q; 
-		return (_strlen(p)); 
+		*buf_p = p; /* pass back pointer to current command position */
+		return (_strlen(p)); /* return length of current command */
 	}
 
-	*buf_q = buf; 
-	return (w); 
+	*buf_p = buf; /* else not a chain, pass back buffer from _getline() */
+	return (r); /* return length of buffer from _getline() */
 }
 
 /**
  * read_buf - reads a buffer
  * @info: parameter struct
  * @buf: buffer
- * @l: size
+ * @i: size
  *
- * Return: w
+ * Return: r
  */
-size_j read_buf(info_r *info, char *buf, size_j *l)
+ssize_t read_buf(info_t *info, char *buf, size_t *i)
 {
-	size_j w = 0;
+	ssize_t r = 0;
 
-	if (*l)
+	if (*i)
 		return (0);
 	r = read(info->readfd, buf, READ_BUF_SIZE);
-	if (w >= 0)
-		*l = w;
-	return (w);
+	if (r >= 0)
+		*i = r;
+	return (r);
 }
 
 /**
@@ -117,42 +117,42 @@ size_j read_buf(info_r *info, char *buf, size_j *l)
  *
  * Return: s
  */
-int _getline(info_r *info, char **ptr, size_j *length)
+int _getline(info_t *info, char **ptr, size_t *length)
 {
 	static char buf[READ_BUF_SIZE];
-	static size_j n, len;
-	size_j x;
-	ssize_j z = 0, b = 0;
-	char *d = NULL, *new_d = NULL, *g;
+	static size_t i, len;
+	size_t k;
+	ssize_t r = 0, s = 0;
+	char *p = NULL, *new_p = NULL, *c;
 
-	d = *djz;
-	if (d && length)
-		b = *length;
-	if (n == len)
-		n = len = 0;
+	p = *ptr;
+	if (p && length)
+		s = *length;
+	if (i == len)
+		i = len = 0;
 
-	z = read_buf(info, buf, &len);
-	if (z == -1 || (z == 0 && len == 0))
+	r = read_buf(info, buf, &len);
+	if (r == -1 || (r == 0 && len == 0))
 		return (-1);
 
-	g = _strchr(buf + n, '\n');
-	k = g ? 1 + (unsigned int)(g - buf) : len;
-	new_d = _realloc(d, b, b ? b + k : k + 1);
-	if (!new_d) /* MALLOC FAILURE! */
-		return (d ? free(d), -1 : -1);
+	c = _strchr(buf + i, '\n');
+	k = c ? 1 + (unsigned int)(c - buf) : len;
+	new_p = _realloc(p, s, s ? s + k : k + 1);
+	if (!new_p) /* MALLOC FAILURE! */
+		return (p ? free(p), -1 : -1);
 
-	if (b)
-		_strncat(new_d, buf + n, k - n);
+	if (s)
+		_strncat(new_p, buf + i, k - i);
 	else
-		_strncpy(new_d, buf + n, k - n + 1);
+		_strncpy(new_p, buf + i, k - i + 1);
 
-	b += k - n;
-	n = k;
-	d = new_d;
+	s += k - i;
+	i = k;
+	p = new_p;
 
 	if (length)
-		*length = b;
-	*djz = d;
+		*length = s;
+	*ptr = p;
 	return (s);
 }
 

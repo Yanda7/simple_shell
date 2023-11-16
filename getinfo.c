@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * clear_info - initializes info_r struct
+ * clear_info - initializes info_t struct
  * @info: struct address
  */
-void clear_info(info_r *info)
+void clear_info(info_t *info)
 {
 	info->arg = NULL;
 	info->argv = NULL;
@@ -13,13 +13,13 @@ void clear_info(info_r *info)
 }
 
 /**
- * set_info - initializes info_r struct
+ * set_info - initializes info_t struct
  * @info: struct address
  * @av: argument vector
  */
-void set_info(info_r *info, char **av)
+void set_info(info_t *info, char **av)
 {
-	int n = 0;
+	int i = 0;
 
 	info->fname = av[0];
 	if (info->arg)
@@ -35,9 +35,9 @@ void set_info(info_r *info, char **av)
 				info->argv[1] = NULL;
 			}
 		}
-		for (n = 0; info->argv && info->argv[n]; n++)
+		for (i = 0; info->argv && info->argv[i]; i++)
 			;
-		info->argc = n;
+		info->argc = i;
 
 		replace_alias(info);
 		replace_vars(info);
@@ -45,11 +45,11 @@ void set_info(info_r *info, char **av)
 }
 
 /**
- * free_info - frees info_r struct fields
+ * free_info - frees info_t struct fields
  * @info: struct address
  * @all: true if freeing all fields
  */
-void free_info(info_r *info, int all)
+void free_info(info_t *info, int all)
 {
 	ffree(info->argv);
 	info->argv = NULL;

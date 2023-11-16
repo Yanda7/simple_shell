@@ -6,16 +6,16 @@
  *
  * Return: size of list
  */
-size_j list_len(const list_q *g)
+size_t list_len(const list_t *h)
 {
-	size_j n = 0;
+	size_t i = 0;
 
-	while (g)
+	while (h)
 	{
-		g = g->next;
-		n++;
+		h = h->next;
+		i++;
 	}
-	return (n);
+	return (i);
 }
 
 /**
@@ -24,33 +24,33 @@ size_j list_len(const list_q *g)
  *
  * Return: array of strings
  */
-char **list_to_strings(list_q *head)
+char **list_to_strings(list_t *head)
 {
-	list_q *node = head;
-	size_j n = list_len(head), k;
+	list_t *node = head;
+	size_t i = list_len(head), j;
 	char **strs;
 	char *str;
 
-	if (!head || !n)
+	if (!head || !i)
 		return (NULL);
-	strs = malloc(sizeof(char *) * (n + 1));
+	strs = malloc(sizeof(char *) * (i + 1));
 	if (!strs)
 		return (NULL);
-	for (n = 0; node; node = node->next, n++)
+	for (i = 0; node; node = node->next, i++)
 	{
 		str = malloc(_strlen(node->str) + 1);
 		if (!str)
 		{
-			for (k = 0; k < n; k++)
-				free(strs[k]);
+			for (j = 0; j < i; j++)
+				free(strs[j]);
 			free(strs);
 			return (NULL);
 		}
 
 		str = _strcpy(str, node->str);
-		strs[n] = str;
+		strs[i] = str;
 	}
-	strs[n] = NULL;
+	strs[i] = NULL;
 	return (strs);
 }
 
@@ -61,21 +61,21 @@ char **list_to_strings(list_q *head)
  *
  * Return: size of list
  */
-size_j print_list(const list_q *g)
+size_t print_list(const list_t *h)
 {
-	size_j n = 0;
+	size_t i = 0;
 
-	while (g)
+	while (h)
 	{
-		_puts(convert_number(g->num, 10, 0));
+		_puts(convert_number(h->num, 10, 0));
 		_putchar(':');
 		_putchar(' ');
-		_puts(g->str ? g->str : "(nil)");
+		_puts(h->str ? h->str : "(nil)");
 		_puts("\n");
-		g = g->next;
-		n++;
+		h = h->next;
+		i++;
 	}
-	return (n);
+	return (i);
 }
 
 /**
@@ -86,14 +86,14 @@ size_j print_list(const list_q *g)
  *
  * Return: match node or null
  */
-list_q *node_starts_with(list_t *node, char *prefix, char d)
+list_t *node_starts_with(list_t *node, char *prefix, char c)
 {
-	char *e = NULL;
+	char *p = NULL;
 
 	while (node)
 	{
-		e = starts_with(node->str, prefix);
-		if (e && ((d == -1) || (*e == c)))
+		p = starts_with(node->str, prefix);
+		if (p && ((c == -1) || (*p == c)))
 			return (node);
 		node = node->next;
 	}
@@ -107,16 +107,16 @@ list_q *node_starts_with(list_t *node, char *prefix, char d)
  *
  * Return: index of node or -1
  */
-size_j get_node_index(list_q *head, list_q *node)
+ssize_t get_node_index(list_t *head, list_t *node)
 {
-	size_j n = 0;
+	size_t i = 0;
 
 	while (head)
 	{
 		if (head == node)
-			return (n);
+			return (i);
 		head = head->next;
-		n++;
+		i++;
 	}
 	return (-1);
 }

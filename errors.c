@@ -1,66 +1,66 @@
 #include "shell.h"
 
 /**
- *_Cputs - prints an input string
+ *_eputs - prints an input string
  * @str: the string to be printed
  *
  * Return: Nothing
  */
-void _Cputs(char *str)
+void _eputs(char *str)
 {
-	int n = 0;
+	int i = 0;
 
 	if (!str)
 		return;
-	while (str[n] != '\0')
+	while (str[i] != '\0')
 	{
-		_Cputchar(str[n]);
-		n++;
+		_eputchar(str[i]);
+		i++;
 	}
 }
 
 /**
- * _Cputchar - writes the character d to stderr
- * @d: The character to print
+ * _eputchar - writes the character c to stderr
+ * @c: The character to print
  *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
-int _Cputchar(char d)
+int _eputchar(char c)
 {
-	static int n;
+	static int i;
 	static char buf[WRITE_BUF_SIZE];
 
-	if (d == BUF_FLUSH || n >= WRITE_BUF_SIZE)
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		write(2, buf, n);
-		n = 0;
+		write(2, buf, i);
+		i = 0;
 	}
-	if (d != BUF_FLUSH)
-		buf[n++] = c;
+	if (c != BUF_FLUSH)
+		buf[i++] = c;
 	return (1);
 }
 
 /**
- * _putfd - writes the character d to given fd
- * @d: The character to print
+ * _putfd - writes the character c to given fd
+ * @c: The character to print
  * @fd: The filedescriptor to write to
  *
  * Return: On success 1.
  * On error, -1 is returned, and errno is set appropriately.
  */
-int _putfd(char d, int fd)
+int _putfd(char c, int fd)
 {
-	static int n;
+	static int i;
 	static char buf[WRITE_BUF_SIZE];
 
-	if (d == BUF_FLUSH || i >= WRITE_BUF_SIZE)
+	if (c == BUF_FLUSH || i >= WRITE_BUF_SIZE)
 	{
-		write(fd, buf, n);
-		n = 0;
+		write(fd, buf, i);
+		i = 0;
 	}
-	if (d != BUF_FLUSH)
-		buf[n++] = d;
+	if (c != BUF_FLUSH)
+		buf[i++] = c;
 	return (1);
 }
 
@@ -73,13 +73,13 @@ int _putfd(char d, int fd)
  */
 int _putsfd(char *str, int fd)
 {
-	int n = 0;
+	int i = 0;
 
 	if (!str)
 		return (0);
 	while (*str)
 	{
-		n += _putfd(*str++, fd);
+		i += _putfd(*str++, fd);
 	}
-	return (n);
+	return (i);
 }
